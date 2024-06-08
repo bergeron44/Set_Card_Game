@@ -128,6 +128,7 @@ public class Player implements Runnable {
                 // TODO implement player key press simulator
                 try {
                     synchronized (this) {
+                        keyPressed((int) (Math.random() * table.countCards()));
                         wait();
                     }
                 } catch (InterruptedException ignored) {
