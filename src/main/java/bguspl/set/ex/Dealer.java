@@ -61,7 +61,8 @@ public class Dealer implements Runnable {
     }
 
     /**
-     * The inner loop of the dealer thread that runs as long as the countdown did not time out.
+     * The inner loop of the dealer thread that runs as long as the countdown did
+     * not time out.
      */
     private void timerLoop() {
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
@@ -103,7 +104,8 @@ public class Dealer implements Runnable {
     }
 
     /**
-     * Sleep for a fixed amount of time or until the thread is awakened for some purpose.
+     * Sleep for a fixed amount of time or until the thread is awakened for some
+     * purpose.
      */
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
@@ -128,5 +130,34 @@ public class Dealer implements Runnable {
      */
     private void announceWinners() {
         // TODO implement
+    }
+
+    /**
+     * Checks if the player have a set and reward/panish him accordingly
+     */
+    public void isSet(int[] slots, int id) {
+        if (env.util.testSet(slots)) {
+            synchronized (table) {
+                updateTimerDisplay(true);
+                for (int card : slots) {
+                    table.removeCard(card);
+                }
+                for (Player player : players) {
+                    for (int slot : slots) {
+                        player.removeToken(slot);
+                    }
+                    if (player.id == id) {
+                        player.point();
+                    }
+                }
+            }
+        } else {
+            for (Player player : players) {
+                if (player.id == id) {
+                    player.penalty();
+                    break;
+                }
+            }
+        }
     }
 }

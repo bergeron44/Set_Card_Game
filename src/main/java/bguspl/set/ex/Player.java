@@ -1,5 +1,8 @@
 package bguspl.set.ex;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import bguspl.set.Env;
 
 /**
@@ -9,6 +12,15 @@ import bguspl.set.Env;
  * @inv score >= 0
  */
 public class Player implements Runnable {
+    /**
+     * Player Choices
+     */
+    private final List<Integer> cards;
+
+    /**
+     * The dealer object.
+     */
+    private final Dealer dealer;
 
     /**
      * The game environment object.
@@ -31,7 +43,8 @@ public class Player implements Runnable {
     private Thread playerThread;
 
     /**
-     * The thread of the AI (computer) player (an additional thread used to generate key presses).
+     * The thread of the AI (computer) player (an additional thread used to generate
+     * key presses).
      */
     private Thread aiThread;
 
@@ -57,34 +70,55 @@ public class Player implements Runnable {
      * @param dealer - the dealer object.
      * @param table  - the table object.
      * @param id     - the id of the player.
-     * @param human  - true iff the player is a human player (i.e. input is provided manually, via the keyboard).
+     * @param human  - true iff the player is a human player (i.e. input is provided
+     *               manually, via the keyboard).
      */
     public Player(Env env, Dealer dealer, Table table, int id, boolean human) {
+        this.dealer = dealer;
         this.env = env;
         this.table = table;
         this.id = id;
         this.human = human;
+        this.cards = new LinkedList<>();
     }
 
     /**
-     * The main player thread of each player starts here (main loop for the player thread).
+     * The main player thread of each player starts here (main loop for the player
+     * thread).
      */
     @Override
     public void run() {
         playerThread = Thread.currentThread();
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
-        if (!human) createArtificialIntelligence();
+        if (!human)
+            createArtificialIntelligence();
 
         while (!terminate) {
             // TODO implement main player loop
+            if (cards.size() == 3) {
+                int[] cardsArray = new int[3];
+                int i = 0;
+                for (int card : cards) {
+                    cardsArray[i] = card;
+                    i++;
+                }
+                dealer.isSet(cardsArray, id);
+            }
+
         }
-        if (!human) try { aiThread.join(); } catch (InterruptedException ignored) {}
+        if (!human)
+            try {
+                aiThread.join();
+            } catch (InterruptedException ignored) {
+            }
         env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
     }
 
     /**
-     * Creates an additional thread for an AI (computer) player. The main loop of this thread repeatedly generates
-     * key presses. If the queue of key presses is full, the thread waits until it is not full.
+     * Creates an additional thread for an AI (computer) player. The main loop of
+     * this thread repeatedly generates
+     * key presses. If the queue of key presses is full, the thread waits until it
+     * is not full.
      */
     private void createArtificialIntelligence() {
         // note: this is a very, very smart AI (!)
@@ -93,8 +127,11 @@ public class Player implements Runnable {
             while (!terminate) {
                 // TODO implement player key press simulator
                 try {
-                    synchronized (this) { wait(); }
-                } catch (InterruptedException ignored) {}
+                    synchronized (this) {
+                        wait();
+                    }
+                } catch (InterruptedException ignored) {
+                }
             }
             env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
@@ -106,6 +143,11 @@ public class Player implements Runnable {
      */
     public void terminate() {
         // TODO implement
+        terminate = true;
+        if (!human) {
+            aiThread.interrupt();
+        }
+        playerThread.interrupt();
     }
 
     /**
@@ -114,7 +156,13 @@ public class Player implements Runnable {
      * @param slot - the slot corresponding to the key pressed.
      */
     public void keyPressed(int slot) {
-        // TODO implement
+        if (cards.size() >= 3) {
+            return;
+        }
+        if (!removeToken(slot)) {
+            cards.add(slot);
+            table.placeToken(id, slot);
+        }
     }
 
     /**
@@ -125,7 +173,9 @@ public class Player implements Runnable {
      */
     public void point() {
         // TODO implement
-
+        env.ui.setFreeze(id, env.config.pointFreezeMillis);
+        score++;
+        env.ui.setScore(id, score);
         int ignored = table.countCards(); // this part is just for demonstration in the unit tests
         env.ui.setScore(id, ++score);
     }
@@ -135,9 +185,24 @@ public class Player implements Runnable {
      */
     public void penalty() {
         // TODO implement
+        env.ui.setFreeze(id, env.config.penaltyFreezeMillis);
     }
 
     public int score() {
         return score;
+    }
+
+    /**
+     * Remove the token from cards
+     */
+    public boolean removeToken(int slot) {
+        for (Integer CSlot : cards) {
+            if (CSlot == slot) {
+                cards.remove(CSlot);
+                table.removeToken(id, slot);
+                return true;
+            }
+        }
+        return false;
     }
 }
