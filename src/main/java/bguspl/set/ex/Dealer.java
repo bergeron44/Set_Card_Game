@@ -2,7 +2,9 @@ package bguspl.set.ex;
 
 import bguspl.set.Env;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -78,6 +80,10 @@ public class Dealer implements Runnable {
      */
     public void terminate() {
         // TODO implement
+        for (Player player : players) {
+            player.terminate();
+        }
+        terminate = true;
     }
 
     /**
@@ -94,6 +100,19 @@ public class Dealer implements Runnable {
      */
     private void removeCardsFromTable() {
         // TODO implement
+        for (Integer i=0;i<=12 ;i++)
+        {
+            deck.add(i);
+            table.removeCard(i);
+        }
+
+        for (Integer i=0;i<=12 ;i++)
+        {
+            if(!deck.isEmpty())
+            {
+                table.placeCard(0, i);
+                deck.remove(0);
+            }
     }
 
     /**
@@ -101,6 +120,17 @@ public class Dealer implements Runnable {
      */
     private void placeCardsOnTable() {
         // TODO implement
+        int startingCards = table.countCards();
+        for (Integer i = startingCards; i <= 12; i++)
+            if (!deck.isEmpty())
+                synchronized (table) {
+                    table.placeCard(deck.get(0), i);
+                    deck.remove(0);
+                }
+
+        if (table.countCards() > startingCards && env.config.hints)
+            table.hints();
+
     }
 
     /**
@@ -109,13 +139,25 @@ public class Dealer implements Runnable {
      */
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
+        try {
+            Thread.sleep(env.config.turnTimeoutMillis);
+            updateTimerDisplay(true);
+            Thread.sleep(env.config.turnTimeoutWarningMillis);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     /**
      * Reset and/or update the countdown and the countdown display.
      */
-    private void updateTimerDisplay(boolean reset) {
+    private synchronized void updateTimerDisplay(boolean reset) {
         // TODO implement
+        if (reset) {
+            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, reset);
+        } else {
+            env.ui.setCountdown(env.config.turnTimeoutMillis, reset);
+        }
     }
 
     /**
@@ -130,6 +172,22 @@ public class Dealer implements Runnable {
      */
     private void announceWinners() {
         // TODO implement
+        Stack<Player> winners = new Stack<>();
+        int points = 0;
+        for (Player player : players) {
+            if (player.score() == points) {
+                winners.push(player);
+            } else if (player.score() > points) {
+                winners.clear();
+                winners.push(player);
+            }
+        }
+        int[] winnersID = new int[winners.size()];
+        for (int i = 0; i < winnersID.length; i++) {
+            winnersID[i] = winners.pop().id;
+        }
+        env.ui.announceWinner(winnersID);
+        terminate();
     }
 
     /**
@@ -138,7 +196,7 @@ public class Dealer implements Runnable {
     public void isSet(int[] slots, int id) {
         if (env.util.testSet(slots)) {
             synchronized (table) {
-                updateTimerDisplay(true);
+                updateTimerDisplay(false);
                 for (int card : slots) {
                     table.removeCard(card);
                 }
