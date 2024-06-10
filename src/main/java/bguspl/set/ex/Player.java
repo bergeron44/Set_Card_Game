@@ -2,6 +2,7 @@ package bguspl.set.ex;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import bguspl.set.Env;
 
@@ -79,7 +80,7 @@ public class Player implements Runnable {
         this.table = table;
         this.id = id;
         this.human = human;
-        this.cards = new LinkedList<>();
+        this.cards = new Stack<>();
     }
 
     /**
@@ -92,19 +93,12 @@ public class Player implements Runnable {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
         if (!human)
             createArtificialIntelligence();
-
         while (!terminate) {
             // TODO implement main player loop
             if (cards.size() == 3) {
-                int[] cardsArray = new int[3];
-                int i = 0;
-                for (int card : cards) {
-                    cardsArray[i] = card;
-                    i++;
-                }
-                dealer.isSet(cardsArray, id);
+                dealer.set(id);
+                notifyAll();
             }
-
         }
         if (!human)
             try {
@@ -206,4 +200,9 @@ public class Player implements Runnable {
         }
         return false;
     }
+
+    public List<Integer> getCard() {
+        return cards;
+    }
+
 }
