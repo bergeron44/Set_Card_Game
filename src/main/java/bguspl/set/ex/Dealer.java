@@ -169,9 +169,12 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
         try {
+            updateTimerDisplay(false);
             Thread.sleep(env.config.turnTimeoutMillis);
-            updateTimerDisplay(true);
-            Thread.sleep(env.config.turnTimeoutWarningMillis);
+            if (System.currentTimeMillis() > reshuffleTime) {
+                updateTimerDisplay(true);
+                Thread.sleep(env.config.turnTimeoutWarningMillis);
+            }
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -184,8 +187,10 @@ public class Dealer implements Runnable {
         // TODO implement
         if (reset) {
             env.ui.setCountdown(env.config.turnTimeoutWarningMillis, reset);
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
         } else {
             env.ui.setCountdown(env.config.turnTimeoutMillis, reset);
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
         }
     }
 
