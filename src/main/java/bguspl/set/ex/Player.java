@@ -1,6 +1,5 @@
 package bguspl.set.ex;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -96,7 +95,7 @@ public class Player implements Runnable {
         while (!terminate) {
             // TODO implement main player loop
             if (cards.size() == 3) {
-                dealer.contendersToSet.push(id);
+                dealer.contendersToSet.push(this);
                 notifyAll();
                 playerThread.join();
             }
@@ -156,7 +155,7 @@ public class Player implements Runnable {
             return;
         }
         if (!removeToken(slot)) {
-            cards.push(slot);
+            cards.push(table.slotToCard[slot]);
             table.placeToken(id, slot);
         }
     }
@@ -192,9 +191,9 @@ public class Player implements Runnable {
      * Remove the token from cards
      */
     public boolean removeToken(int slot) {
-        for (Integer CSlot : cards) {
-            if (CSlot == slot) {
-                cards.remove(CSlot);
+        for (Integer card : cards) {
+            if (card == table.slotToCard[slot]) {
+                cards.remove(card);
                 table.removeToken(id, slot);
                 return true;
             }
@@ -202,10 +201,18 @@ public class Player implements Runnable {
         return false;
     }
 
+    /**
+     * @return 3 cells length array that contain the cards in the stack
+     */
     public int[] getCards() {
         int[] cardsArray = new int[3];
         for (int i = 0; i < cardsArray.length; i++) {
-            cardsArray[i]=cards.pop();
+            cardsArray[i]=-1;
+        }
+        int i = 0;
+        for (int card : cards) {
+            cardsArray[i]=card;
+            i++;
         }
         return cardsArray;
     }
