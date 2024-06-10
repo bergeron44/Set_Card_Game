@@ -16,7 +16,7 @@ public class Player implements Runnable {
     /**
      * Player Choices
      */
-    private final List<Integer> cards;
+    private final Stack<Integer> cards;
 
     /**
      * The dealer object.
@@ -155,7 +155,7 @@ public class Player implements Runnable {
             return;
         }
         if (!removeToken(slot)) {
-            cards.add(slot);
+            cards.push(slot);
             table.placeToken(id, slot);
         }
     }
@@ -201,8 +201,12 @@ public class Player implements Runnable {
         return false;
     }
 
-    public List<Integer> getCard() {
-        return cards;
+    public int[] getCards() {
+        int[] cardsArray = new int[3];
+        for (int i = 0; i < cardsArray.length; i++) {
+            cardsArray[i]=cards.pop();
+        }
+        return cardsArray;
     }
 
 }
