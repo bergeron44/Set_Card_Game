@@ -5,6 +5,7 @@ import bguspl.set.Env;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,7 +24,11 @@ public class Dealer implements Runnable {
      */
     private final Table table;
     private final Player[] players;
+<<<<<<< HEAD
 
+=======
+    public final Queue<Player> contendersToSet;
+>>>>>>> faadc1b (com)
     /**
      * The list of card ids that are left in the dealer's deck.
      */
@@ -44,6 +49,11 @@ public class Dealer implements Runnable {
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
+<<<<<<< HEAD
+=======
+        contendersToSet = new PriorityQueue<>();
+
+>>>>>>> faadc1b (com)
     }
 
     /**
@@ -100,18 +110,44 @@ public class Dealer implements Runnable {
      */
     private void removeCardsFromTable() {
         // TODO implement
-        for (Integer i = 0; i <= 12; i++) {
-            deck.add(i);
-            table.removeCard(i);
+        if (contendersToSet.isEmpty()) {
+            return;
         }
 
-        for (Integer i = 0; i <= 12; i++) {
-            if (!deck.isEmpty()) {
-                table.placeCard(0, i);
-                deck.remove(0);
+        while (!contendersToSet.isEmpty()) {
+            Player player = contendersToSet.remove();
+            int[] playerCards = player.getCards();
+            boolean isSet = true;
+            for (int i = 0; i < 3; i++) {
+                if (playerCards[i] == -1)
+                    isSet = false;
+            }
+            isSet = env.util.testSet(playerCards);
+            player.point();
+
+            // Reaching this code isSet tells us whether the player has a legitimate set
+            if (isSet) {
+                synchronized (table) {
+                    updateTimerDisplay(false);
+                    for (int card : playerCards) {
+                        table.removeCard(card);
+                    }
+                    for (Player p : players) {
+                        for (int card : playerCards) {
+                            p.removeToken(table.cardToSlot[card]);
+                        }
+                    }
+                }
+            } else {
+                player.penalty();
             }
         }
+
     }
+
+    
+
+    
 
     /**
      * Check if any cards can be removed from the deck and placed on the table.
@@ -162,7 +198,17 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        // TODO implement
+        for (Integer i = 0; i <= 12; i++) {
+            deck.add(i);
+            table.removeCard(i);
+        }
+
+        for (Integer i = 0; i <= 12; i++) {
+            if (!deck.isEmpty()) {
+                table.placeCard(0, i);
+                deck.remove(0);
+            }
+        }
     }
 
     /**
