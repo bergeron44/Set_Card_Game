@@ -4,6 +4,8 @@ import bguspl.set.Env;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -24,11 +26,7 @@ public class Dealer implements Runnable {
      */
     private final Table table;
     private final Player[] players;
-<<<<<<< HEAD
-
-=======
     public final Queue<Player> contendersToSet;
->>>>>>> faadc1b (com)
     /**
      * The list of card ids that are left in the dealer's deck.
      */
@@ -49,11 +47,8 @@ public class Dealer implements Runnable {
         this.table = table;
         this.players = players;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
-<<<<<<< HEAD
-=======
         contendersToSet = new PriorityQueue<>();
 
->>>>>>> faadc1b (com)
     }
 
     /**
