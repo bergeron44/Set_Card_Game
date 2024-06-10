@@ -100,19 +100,17 @@ public class Dealer implements Runnable {
      */
     private void removeCardsFromTable() {
         // TODO implement
-        for (Integer i=0;i<=12 ;i++)
-        {
+        for (Integer i = 0; i <= 12; i++) {
             deck.add(i);
             table.removeCard(i);
         }
 
-        for (Integer i=0;i<=12 ;i++)
-        {
-            if(!deck.isEmpty())
-            {
+        for (Integer i = 0; i <= 12; i++) {
+            if (!deck.isEmpty()) {
                 table.placeCard(0, i);
                 deck.remove(0);
             }
+        }
     }
 
     /**
