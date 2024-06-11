@@ -97,12 +97,7 @@ public class Player implements Runnable {
             if (cards.size() == 3) {
                 dealer.contendersToSet.add(this);
                 notifyAll();
-                try {
-                    playerThread.join();
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
-                
+                playerThread.join();
             }
         }
         if (!human)
