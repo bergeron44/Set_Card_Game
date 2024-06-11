@@ -42,10 +42,14 @@ public class Dealer implements Runnable {
      */
     private long reshuffleTime = Long.MAX_VALUE;
 
+    private boolean warning;
+    private long timeout;
+
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
+        this.warning = false;
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         contendersToSet = new PriorityQueue<>();
 
@@ -123,7 +127,7 @@ public class Dealer implements Runnable {
             // Reaching this code isSet tells us whether the player has a legitimate set
             if (isSet) {
                 synchronized (table) {
-                    updateTimerDisplay(false);
+                    updateTimerDisplay(true);
                     for (int card : playerCards) {
                         table.removeCard(card);
                     }
@@ -139,10 +143,6 @@ public class Dealer implements Runnable {
         }
 
     }
-
-    
-
-    
 
     /**
      * Check if any cards can be removed from the deck and placed on the table.
@@ -169,12 +169,13 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
         try {
-            updateTimerDisplay(false);
-            Thread.sleep(env.config.turnTimeoutMillis);
-            // לבדוק אם הייתי צריך להתעורר
-            if (System.currentTimeMillis() > reshuffleTime) {
-                updateTimerDisplay(true);
-                Thread.sleep(env.config.turnTimeoutWarningMillis);
+            this.timeout = System.currentTimeMillis() + env.config.turnTimeoutMillis;
+            Thread.currentThread().wait(timeout - System.currentTimeMillis());
+            if (System.currentTimeMillis() > timeout) {
+                this.warning = true;
+                updateTimerDisplay(false);
+                timeout = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
+                Thread.currentThread().wait(timeout - System.currentTimeMillis());
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -187,11 +188,12 @@ public class Dealer implements Runnable {
     private synchronized void updateTimerDisplay(boolean reset) {
         // TODO implement
         if (reset) {
-            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, reset);
-            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
-        } else {
-            env.ui.setCountdown(env.config.turnTimeoutMillis, reset);
-            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
+            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, false);
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis
+                    + env.config.turnTimeoutMillis;
+        } else if (warning) {
+            this.warning=false;
+            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, true);
         }
     }
 
