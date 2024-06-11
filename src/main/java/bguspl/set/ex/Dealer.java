@@ -171,6 +171,7 @@ public class Dealer implements Runnable {
         try {
             updateTimerDisplay(false);
             Thread.sleep(env.config.turnTimeoutMillis);
+            // לבדוק אם הייתי צריך להתעורר
             if (System.currentTimeMillis() > reshuffleTime) {
                 updateTimerDisplay(true);
                 Thread.sleep(env.config.turnTimeoutWarningMillis);

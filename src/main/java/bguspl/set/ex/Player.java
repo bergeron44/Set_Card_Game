@@ -95,9 +95,14 @@ public class Player implements Runnable {
         while (!terminate) {
             // TODO implement main player loop
             if (cards.size() == 3) {
-                dealer.contendersToSet.push(this);
+                dealer.contendersToSet.add(this);
                 notifyAll();
-                playerThread.join();
+                try {
+                    playerThread.join();
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+                
             }
         }
         if (!human)
