@@ -1,15 +1,13 @@
 package bguspl.set.ex;
 
-import bguspl.set.Env;
-
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import bguspl.set.Env;
 
 /**
  * This class manages the dealer's threads and data
@@ -150,7 +148,7 @@ public class Dealer implements Runnable {
     private void placeCardsOnTable() {
         // TODO implement
         int startingCards = table.countCards();
-        for (Integer i = startingCards; i <= 12; i++)
+        for (Integer i = startingCards; i < 12; i++)
             if (!deck.isEmpty())
                 synchronized (table) {
                     table.placeCard(deck.get(0), i);
@@ -201,12 +199,12 @@ public class Dealer implements Runnable {
      * Returns all the cards from the table to the deck.
      */
     private void removeAllCardsFromTable() {
-        for (Integer i = 0; i <= 12; i++) {
+        for (Integer i = 0; i < 12; i++) {
             deck.add(i);
             table.removeCard(i);
         }
 
-        for (Integer i = 0; i <= 12; i++) {
+        for (Integer i = 0; i < 12; i++) {
             if (!deck.isEmpty()) {
                 table.placeCard(0, i);
                 deck.remove(0);

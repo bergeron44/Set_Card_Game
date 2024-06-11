@@ -1,0 +1,42 @@
+[16:40:19.218] [INFO   ] thread main starting.
+[16:40:19.226] [SEVERE ] cannot read configuration file config.properties trying from resources.
+[16:40:19.230] [SEVERE ] configuration file was loaded from resources directory.
+[16:40:19.774] [INFO   ] thread dealer starting.
+[16:40:19.774] [INFO   ] thread dealer starting.
+[16:40:19.889] [SEVERE ] placing card 0 in slot 0
+[16:40:19.996] [SEVERE ] placing card 1 in slot 1
+[16:40:20.106] [SEVERE ] placing card 2 in slot 2
+[16:40:20.215] [SEVERE ] placing card 3 in slot 3
+[16:40:20.325] [SEVERE ] placing card 4 in slot 4
+[16:40:20.434] [SEVERE ] placing card 5 in slot 5
+[16:40:20.544] [SEVERE ] placing card 6 in slot 6
+[16:40:20.653] [SEVERE ] placing card 7 in slot 7
+[16:40:20.764] [SEVERE ] placing card 8 in slot 8
+[16:40:20.866] [SEVERE ] placing card 9 in slot 9
+[16:40:20.977] [SEVERE ] placing card 10 in slot 10
+[16:40:21.081] [SEVERE ] placing card 11 in slot 11
+[16:40:21.973] [SEVERE ] key 81 was pressed by player 1
+[16:40:21.973] [SEVERE ] remove token false
+[16:40:21.973] [SEVERE ] player 1 placing token on slot 0
+[16:40:22.098] [SEVERE ] key 87 was pressed by player 1
+[16:40:22.098] [SEVERE ] remove token false
+[16:40:22.098] [SEVERE ] player 1 placing token on slot 1
+[16:40:22.165] [SEVERE ] key 69 was pressed by player 1
+[16:40:22.165] [SEVERE ] remove token false
+[16:40:22.165] [SEVERE ] player 1 placing token on slot 2
+[16:40:22.559] [SEVERE ] key 81 was pressed by player 1
+[16:40:22.652] [SEVERE ] key 87 was pressed by player 1
+[16:40:22.702] [SEVERE ] key 69 was pressed by player 1
+[16:40:22.819] [SEVERE ] key 81 was pressed by player 1
+[16:40:22.865] [SEVERE ] key 87 was pressed by player 1
+[16:40:22.937] [SEVERE ] key 69 was pressed by player 1
+[16:40:23.056] [SEVERE ] key 81 was pressed by player 1
+[16:40:23.071] [SEVERE ] key 87 was pressed by player 1
+[16:40:24.387] [SEVERE ] key 81 was pressed by player 1
+[16:40:24.518] [SEVERE ] key 69 was pressed by player 1
+[16:40:24.744] [SEVERE ] key 87 was pressed by player 1
+[16:40:24.858] [SEVERE ] key 69 was pressed by player 1
+[16:40:24.992] [SEVERE ] key 81 was pressed by player 1
+[16:40:25.004] [SEVERE ] key 87 was pressed by player 1
+[16:40:27.912] [SEVERE ] exit button pressed
+[16:40:29.068] [SEVERE ] exit button pressed

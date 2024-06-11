@@ -1,0 +1,78 @@
+[16:25:07.517] [INFO   ] thread main starting.
+[16:25:07.523] [SEVERE ] cannot read configuration file config.properties trying from resources.
+[16:25:07.527] [SEVERE ] configuration file was loaded from resources directory.
+[16:25:07.980] [INFO   ] thread dealer starting.
+[16:25:07.981] [INFO   ] thread dealer starting.
+[16:25:08.088] [SEVERE ] placing card 0 in slot 0
+[16:25:08.191] [SEVERE ] placing card 1 in slot 1
+[16:25:08.293] [SEVERE ] placing card 2 in slot 2
+[16:25:08.404] [SEVERE ] placing card 3 in slot 3
+[16:25:08.507] [SEVERE ] placing card 4 in slot 4
+[16:25:08.620] [SEVERE ] placing card 5 in slot 5
+[16:25:08.756] [SEVERE ] placing card 6 in slot 6
+[16:25:08.861] [SEVERE ] placing card 7 in slot 7
+[16:25:08.973] [SEVERE ] placing card 8 in slot 8
+[16:25:09.083] [SEVERE ] placing card 9 in slot 9
+[16:25:09.189] [SEVERE ] placing card 10 in slot 10
+[16:25:09.298] [SEVERE ] placing card 11 in slot 11
+[16:25:30.344] [SEVERE ] key 81 was pressed by player 1
+[16:25:30.344] [SEVERE ] player 1 placing token on slot 0
+[16:25:30.764] [SEVERE ] key 87 was pressed by player 1
+[16:25:30.765] [SEVERE ] player 1 placing token on slot 1
+[16:25:31.094] [SEVERE ] key 69 was pressed by player 1
+[16:25:31.094] [SEVERE ] player 1 placing token on slot 2
+[16:25:32.798] [SEVERE ] key 69 was pressed by player 1
+[16:25:33.443] [SEVERE ] key 82 was pressed by player 1
+[16:25:33.884] [SEVERE ] key 87 was pressed by player 1
+[16:25:34.201] [SEVERE ] key 81 was pressed by player 1
+[16:25:34.499] [SEVERE ] key 69 was pressed by player 1
+[16:25:34.578] [SEVERE ] key 74 was pressed by player 2
+[16:25:34.578] [SEVERE ] player 2 placing token on slot 4
+[16:25:34.800] [SEVERE ] key 87 was pressed by player 1
+[16:25:34.816] [SEVERE ] key 75 was pressed by player 2
+[16:25:34.816] [SEVERE ] player 2 placing token on slot 5
+[16:25:34.992] [SEVERE ] key 74 was pressed by player 2
+[16:25:34.992] [SEVERE ] removing player 2 token from slot 4
+[16:25:35.279] [SEVERE ] key 74 was pressed by player 2
+[16:25:35.279] [SEVERE ] player 2 placing token on slot 4
+[16:25:35.468] [SEVERE ] key 75 was pressed by player 2
+[16:25:35.468] [SEVERE ] removing player 2 token from slot 5
+[16:25:36.171] [SEVERE ] key 74 was pressed by player 2
+[16:25:36.171] [SEVERE ] removing player 2 token from slot 4
+[16:25:37.230] [SEVERE ] key 74 was pressed by player 2
+[16:25:37.231] [SEVERE ] player 2 placing token on slot 4
+[16:25:38.108] [SEVERE ] key 75 was pressed by player 2
+[16:25:38.108] [SEVERE ] player 2 placing token on slot 5
+[16:25:39.006] [SEVERE ] key 76 was pressed by player 2
+[16:25:39.006] [SEVERE ] player 2 placing token on slot 6
+[16:25:41.515] [SEVERE ] key 77 was pressed by player 2
+[16:25:42.489] [SEVERE ] key 87 was pressed by player 1
+[16:25:42.728] [SEVERE ] key 69 was pressed by player 1
+[16:25:42.887] [SEVERE ] key 79 was pressed by player 2
+[16:25:42.982] [SEVERE ] key 87 was pressed by player 1
+[16:25:43.250] [SEVERE ] key 69 was pressed by player 1
+[16:25:43.533] [SEVERE ] key 81 was pressed by player 1
+[16:25:43.549] [SEVERE ] key 87 was pressed by player 1
+[16:25:43.612] [SEVERE ] key 74 was pressed by player 2
+[16:25:43.760] [SEVERE ] key 81 was pressed by player 1
+[16:25:43.893] [SEVERE ] key 69 was pressed by player 1
+[16:25:44.020] [SEVERE ] key 87 was pressed by player 1
+[16:25:44.168] [SEVERE ] key 87 was pressed by player 1
+[16:25:44.398] [SEVERE ] key 69 was pressed by player 1
+[16:25:44.619] [SEVERE ] key 87 was pressed by player 1
+[16:25:44.889] [SEVERE ] key 81 was pressed by player 1
+[16:25:45.110] [SEVERE ] key 69 was pressed by player 1
+[16:25:45.300] [SEVERE ] key 81 was pressed by player 1
+[16:25:45.315] [SEVERE ] key 87 was pressed by player 1
+[16:25:45.552] [SEVERE ] key 69 was pressed by player 1
+[16:25:45.568] [SEVERE ] key 87 was pressed by player 1
+[16:25:45.778] [SEVERE ] key 81 was pressed by player 1
+[16:25:45.804] [SEVERE ] key 87 was pressed by player 1
+[16:25:45.878] [SEVERE ] key 77 was pressed by player 2
+[16:25:47.129] [SEVERE ] key 75 was pressed by player 2
+[16:25:47.397] [SEVERE ] key 79 was pressed by player 2
+[16:25:49.923] [SEVERE ] exit button pressed
+[16:25:52.289] [SEVERE ] exit button pressed
+[16:25:52.981] [SEVERE ] exit button pressed
+[16:25:54.151] [SEVERE ] exit button pressed
+[16:25:57.457] [SEVERE ] exit button pressed
