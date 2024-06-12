@@ -144,8 +144,8 @@ public class Dealer implements Runnable {
                     for (int card : playerCards) {
                         table.removeCard(table.cardToSlot[card]);
                     }
-                    for (Player p : players) {
-                        for (int card : playerCards) {
+                    for (int card : playerCards) {
+                        for (Player p : players) {
                             p.removeToken(table.cardToSlot[card]);
                         }
                     }

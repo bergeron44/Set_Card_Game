@@ -89,7 +89,7 @@ public class Table {
      *
      * @post - the card placed is on the table, in the assigned slot.
      */
-    public synchronized void placeCard(int card, int slot) {
+    public void placeCard(int card, int slot) {
         try {
             Thread.sleep(env.config.tableDelayMillis);
         } catch (InterruptedException ignored) {}
@@ -110,8 +110,8 @@ public class Table {
         if (!legalSlot(slot))
             throw new RuntimeException();
         
-        cardToSlot[slotToCard[slot]] = -1;
-        slotToCard[slot] = -1;
+        cardToSlot[slotToCard[slot]] = null;
+        slotToCard[slot] = null;
         env.ui.removeCard(slot);
         
     }
