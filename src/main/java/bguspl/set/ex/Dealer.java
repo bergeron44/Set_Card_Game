@@ -42,14 +42,10 @@ public class Dealer implements Runnable {
      */
     private long reshuffleTime = Long.MAX_VALUE;
 
-    private boolean warning;
-    private long timeout;
-
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
-        this.warning = false;
         playersThreads = new ThreadLogger[players.length];
         for (int i = 0; i < players.length; i++) {
             playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
@@ -184,7 +180,10 @@ public class Dealer implements Runnable {
         // TODO implement
         try {
             this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
-            while (contendersToSet.size()<=0&&reshuffleTime - System.currentTimeMillis()>0) { 
+            while (contendersToSet.size()<=0&&reshuffleTime - System.currentTimeMillis()>0) {
+                synchronized(this){
+                    this.wait(100);
+                }
                 updateTimerDisplay(false);
             }
             // if (System.currentTimeMillis() > timeout) {
