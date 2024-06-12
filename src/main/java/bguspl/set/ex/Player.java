@@ -196,13 +196,11 @@ public class Player implements Runnable {
     public boolean removeToken(int slot) {
         for (Integer card : cards) {
             if (card == table.slotToCard[slot]) {
-                System.out.println("card"+card+", slot"+slot+", slot to card"+table.slotToCard[slot]);
                 cards.remove(card);
                 table.removeToken(id, slot);
                 return true;
             }
         }
-        System.out.println("remove token false");
         return false;
     }
 

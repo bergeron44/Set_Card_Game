@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import bguspl.set.Env;
+import bguspl.set.ThreadLogger;
 
 /**
  * This class manages the dealer's threads and data
@@ -24,6 +25,7 @@ public class Dealer implements Runnable {
      */
     private final Table table;
     private final Player[] players;
+    private final ThreadLogger[] playersThreads;
     public final Queue<Player> contendersToSet;
     /**
      * The list of card ids that are left in the dealer's deck.
@@ -48,6 +50,10 @@ public class Dealer implements Runnable {
         this.table = table;
         this.players = players;
         this.warning = false;
+        playersThreads = new ThreadLogger[players.length];
+        for (int i = 0; i < players.length; i++) {
+            playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
+        }
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         contendersToSet = new PriorityQueue<>();
 
@@ -59,6 +65,15 @@ public class Dealer implements Runnable {
     @Override
     public void run() {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
+        try {
+            for (ThreadLogger playerThread : playersThreads) {
+                playerThread.run();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        System.out.println("players are running");
         while (!shouldFinish()) {
             placeCardsOnTable();
             timerLoop();
@@ -74,6 +89,7 @@ public class Dealer implements Runnable {
      * not time out.
      */
     private void timerLoop() {
+        updateTimerDisplay(true);
         while (!terminate && System.currentTimeMillis() < reshuffleTime) {
             sleepUntilWokenOrTimeout();
             updateTimerDisplay(false);
@@ -167,14 +183,19 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
         try {
-            this.timeout = System.currentTimeMillis() + env.config.turnTimeoutMillis;
-            Thread.currentThread().wait(timeout - System.currentTimeMillis());
-            if (System.currentTimeMillis() > timeout) {
-                this.warning = true;
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
+            while (contendersToSet.size()<=0&&reshuffleTime - System.currentTimeMillis()>0) { 
                 updateTimerDisplay(false);
-                timeout = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
-                Thread.currentThread().wait(timeout - System.currentTimeMillis());
             }
+            // if (System.currentTimeMillis() > timeout) {
+            // this.warning = true;
+            // System.out.println("start warning time");
+            // updateTimerDisplay(false);
+            // timeout = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
+            // synchronized (this) {
+            // this.wait(timeout - System.currentTimeMillis());
+            // }
+            // }
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -183,15 +204,22 @@ public class Dealer implements Runnable {
     /**
      * Reset and/or update the countdown and the countdown display.
      */
-    private synchronized void updateTimerDisplay(boolean reset) {
+    private synchronized void updateTimerDisplay(boolean reset) {// מעדכן את השעון יש 4 שניות שיש להפוך לאדום
         // TODO implement
         if (reset) {
-            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, false);
-            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis
-                    + env.config.turnTimeoutMillis;
-        } else if (warning) {
-            this.warning=false;
-            env.ui.setCountdown(env.config.turnTimeoutWarningMillis, true);
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
+            env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), false);
+            // env.ui.setElapsed(this.reshuffleTime - System.currentTimeMillis());
+        } else {
+            if (this.reshuffleTime - System.currentTimeMillis() < env.config.turnTimeoutWarningMillis) {
+                env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), true);
+            } else
+                env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), false);
+            // env.ui.setElapsed(this.reshuffleTime - System.currentTimeMillis());
+            // if (warning) {
+            // this.warning = false;
+            // env.ui.setCountdown(env.config.turnTimeoutWarningMillis, true);
+            // env.ui.setElapsed(timeout);
         }
     }
 
