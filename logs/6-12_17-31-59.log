@@ -1,0 +1,195 @@
+[17:31:59.336] [INFO   ] thread main starting.
+[17:31:59.347] [SEVERE ] cannot read configuration file config.properties trying from resources.
+[17:31:59.350] [SEVERE ] configuration file was loaded from resources directory.
+[17:31:59.864] [INFO   ] thread dealer starting.
+[17:31:59.865] [INFO   ] thread dealer starting.
+[17:31:59.972] [SEVERE ] placing card 0 in slot 0
+[17:32:00.080] [SEVERE ] placing card 1 in slot 1
+[17:32:00.189] [SEVERE ] placing card 2 in slot 2
+[17:32:00.298] [SEVERE ] placing card 3 in slot 3
+[17:32:00.406] [SEVERE ] placing card 4 in slot 4
+[17:32:00.514] [SEVERE ] placing card 5 in slot 5
+[17:32:00.623] [SEVERE ] placing card 6 in slot 6
+[17:32:00.733] [SEVERE ] placing card 7 in slot 7
+[17:32:00.842] [SEVERE ] placing card 8 in slot 8
+[17:32:00.952] [SEVERE ] placing card 9 in slot 9
+[17:32:01.059] [SEVERE ] placing card 10 in slot 10
+[17:32:01.170] [SEVERE ] placing card 11 in slot 11
+[17:32:01.198] [SEVERE ] updating countdown to 60000
+[17:32:01.312] [SEVERE ] updating countdown to 59886
+[17:32:01.420] [SEVERE ] updating countdown to 59778
+[17:32:01.526] [SEVERE ] updating countdown to 59672
+[17:32:01.634] [SEVERE ] updating countdown to 59564
+[17:32:01.744] [SEVERE ] updating countdown to 59454
+[17:32:01.851] [SEVERE ] updating countdown to 59347
+[17:32:01.961] [SEVERE ] updating countdown to 59237
+[17:32:02.070] [SEVERE ] updating countdown to 59128
+[17:32:02.181] [SEVERE ] updating countdown to 59017
+[17:32:02.289] [SEVERE ] updating countdown to 58909
+[17:32:02.397] [SEVERE ] updating countdown to 58801
+[17:32:02.507] [SEVERE ] updating countdown to 58691
+[17:32:02.617] [SEVERE ] updating countdown to 58581
+[17:32:02.726] [SEVERE ] updating countdown to 58472
+[17:32:02.833] [SEVERE ] updating countdown to 58365
+[17:32:02.943] [SEVERE ] updating countdown to 58255
+[17:32:03.053] [SEVERE ] updating countdown to 58145
+[17:32:03.162] [SEVERE ] updating countdown to 58036
+[17:32:03.272] [SEVERE ] updating countdown to 57926
+[17:32:03.380] [SEVERE ] updating countdown to 57818
+[17:32:03.489] [SEVERE ] updating countdown to 57709
+[17:32:03.599] [SEVERE ] updating countdown to 57599
+[17:32:03.708] [SEVERE ] updating countdown to 57490
+[17:32:03.818] [SEVERE ] updating countdown to 57380
+[17:32:03.927] [SEVERE ] updating countdown to 57271
+[17:32:04.036] [SEVERE ] updating countdown to 57162
+[17:32:04.145] [SEVERE ] updating countdown to 57053
+[17:32:04.256] [SEVERE ] updating countdown to 56942
+[17:32:04.365] [SEVERE ] updating countdown to 56833
+[17:32:04.474] [SEVERE ] updating countdown to 56724
+[17:32:04.584] [SEVERE ] updating countdown to 56614
+[17:32:04.693] [SEVERE ] updating countdown to 56505
+[17:32:04.801] [SEVERE ] updating countdown to 56397
+[17:32:04.908] [SEVERE ] updating countdown to 56290
+[17:32:05.017] [SEVERE ] updating countdown to 56181
+[17:32:05.126] [SEVERE ] updating countdown to 56072
+[17:32:05.234] [SEVERE ] updating countdown to 55964
+[17:32:05.343] [SEVERE ] updating countdown to 55855
+[17:32:05.449] [SEVERE ] updating countdown to 55749
+[17:32:05.557] [SEVERE ] updating countdown to 55641
+[17:32:05.663] [SEVERE ] updating countdown to 55535
+[17:32:05.770] [SEVERE ] updating countdown to 55428
+[17:32:05.878] [SEVERE ] updating countdown to 55320
+[17:32:05.985] [SEVERE ] updating countdown to 55213
+[17:32:06.094] [SEVERE ] updating countdown to 55104
+[17:32:06.202] [SEVERE ] updating countdown to 54996
+[17:32:06.309] [SEVERE ] updating countdown to 54889
+[17:32:06.419] [SEVERE ] updating countdown to 54779
+[17:32:06.528] [SEVERE ] updating countdown to 54670
+[17:32:06.635] [SEVERE ] updating countdown to 54563
+[17:32:06.744] [SEVERE ] updating countdown to 54454
+[17:32:06.853] [SEVERE ] updating countdown to 54345
+[17:32:06.963] [SEVERE ] updating countdown to 54235
+[17:32:07.073] [SEVERE ] updating countdown to 54125
+[17:32:07.181] [SEVERE ] updating countdown to 54017
+[17:32:07.291] [SEVERE ] updating countdown to 53907
+[17:32:07.400] [SEVERE ] updating countdown to 53798
+[17:32:07.508] [SEVERE ] updating countdown to 53690
+[17:32:07.617] [SEVERE ] updating countdown to 53581
+[17:32:07.725] [SEVERE ] updating countdown to 53473
+[17:32:07.833] [SEVERE ] updating countdown to 53365
+[17:32:07.942] [SEVERE ] updating countdown to 53256
+[17:32:08.051] [SEVERE ] updating countdown to 53147
+[17:32:08.161] [SEVERE ] updating countdown to 53037
+[17:32:08.269] [SEVERE ] updating countdown to 52929
+[17:32:08.377] [SEVERE ] updating countdown to 52821
+[17:32:08.484] [SEVERE ] updating countdown to 52714
+[17:32:08.592] [SEVERE ] updating countdown to 52606
+[17:32:08.700] [SEVERE ] updating countdown to 52498
+[17:32:08.810] [SEVERE ] updating countdown to 52388
+[17:32:08.920] [SEVERE ] updating countdown to 52278
+[17:32:09.028] [SEVERE ] updating countdown to 52170
+[17:32:09.138] [SEVERE ] updating countdown to 52060
+[17:32:09.247] [SEVERE ] updating countdown to 51951
+[17:32:09.357] [SEVERE ] updating countdown to 51841
+[17:32:09.465] [SEVERE ] updating countdown to 51733
+[17:32:09.574] [SEVERE ] updating countdown to 51624
+[17:32:09.683] [SEVERE ] updating countdown to 51515
+[17:32:09.791] [SEVERE ] updating countdown to 51407
+[17:32:09.898] [SEVERE ] updating countdown to 51300
+[17:32:10.006] [SEVERE ] updating countdown to 51192
+[17:32:10.115] [SEVERE ] updating countdown to 51083
+[17:32:10.225] [SEVERE ] updating countdown to 50973
+[17:32:10.334] [SEVERE ] updating countdown to 50864
+[17:32:10.442] [SEVERE ] updating countdown to 50756
+[17:32:10.550] [SEVERE ] updating countdown to 50648
+[17:32:10.605] [SEVERE ] key 81 was pressed by player 1
+[17:32:10.606] [SEVERE ] player 1 placing token on slot 0
+[17:32:10.658] [SEVERE ] updating countdown to 50540
+[17:32:10.690] [SEVERE ] key 87 was pressed by player 1
+[17:32:10.691] [SEVERE ] player 1 placing token on slot 1
+[17:32:10.767] [SEVERE ] updating countdown to 50431
+[17:32:10.792] [SEVERE ] key 69 was pressed by player 1
+[17:32:10.792] [SEVERE ] player 1 placing token on slot 2
+[17:32:10.875] [SEVERE ] updating countdown to 50323
+[17:32:10.973] [SEVERE ] key 81 was pressed by player 1
+[17:32:10.984] [SEVERE ] updating countdown to 50214
+[17:32:11.064] [SEVERE ] key 69 was pressed by player 1
+[17:32:11.083] [SEVERE ] key 87 was pressed by player 1
+[17:32:11.092] [SEVERE ] updating countdown to 50106
+[17:32:11.181] [SEVERE ] key 81 was pressed by player 1
+[17:32:11.201] [SEVERE ] updating countdown to 49997
+[17:32:11.265] [SEVERE ] key 87 was pressed by player 1
+[17:32:11.276] [SEVERE ] key 69 was pressed by player 1
+[17:32:11.311] [SEVERE ] updating countdown to 49887
+[17:32:11.376] [SEVERE ] key 81 was pressed by player 1
+[17:32:11.420] [SEVERE ] updating countdown to 49778
+[17:32:11.464] [SEVERE ] key 69 was pressed by player 1
+[17:32:11.528] [SEVERE ] updating countdown to 49670
+[17:32:11.560] [SEVERE ] key 81 was pressed by player 1
+[17:32:11.636] [SEVERE ] updating countdown to 49562
+[17:32:11.654] [SEVERE ] key 69 was pressed by player 1
+[17:32:11.743] [SEVERE ] updating countdown to 49455
+[17:32:11.751] [SEVERE ] key 81 was pressed by player 1
+[17:32:11.837] [SEVERE ] key 69 was pressed by player 1
+[17:32:11.849] [SEVERE ] key 87 was pressed by player 1
+[17:32:11.853] [SEVERE ] updating countdown to 49345
+[17:32:11.961] [SEVERE ] updating countdown to 49237
+[17:32:12.069] [SEVERE ] updating countdown to 49129
+[17:32:12.178] [SEVERE ] updating countdown to 49020
+[17:32:12.288] [SEVERE ] updating countdown to 48910
+[17:32:12.395] [SEVERE ] updating countdown to 48803
+[17:32:12.504] [SEVERE ] updating countdown to 48694
+[17:32:12.611] [SEVERE ] updating countdown to 48587
+[17:32:12.721] [SEVERE ] updating countdown to 48477
+[17:32:12.830] [SEVERE ] updating countdown to 48368
+[17:32:12.939] [SEVERE ] updating countdown to 48259
+[17:32:13.048] [SEVERE ] updating countdown to 48150
+[17:32:13.156] [SEVERE ] updating countdown to 48042
+[17:32:13.266] [SEVERE ] updating countdown to 47932
+[17:32:13.374] [SEVERE ] updating countdown to 47824
+[17:32:13.484] [SEVERE ] updating countdown to 47714
+[17:32:13.594] [SEVERE ] updating countdown to 47604
+[17:32:13.703] [SEVERE ] updating countdown to 47495
+[17:32:13.811] [SEVERE ] updating countdown to 47387
+[17:32:13.920] [SEVERE ] updating countdown to 47278
+[17:32:13.941] [SEVERE ] exit button pressed
+[17:32:14.027] [SEVERE ] updating countdown to 47171
+[17:32:14.135] [SEVERE ] updating countdown to 47063
+[17:32:14.244] [SEVERE ] updating countdown to 46954
+[17:32:14.353] [SEVERE ] updating countdown to 46845
+[17:32:14.461] [SEVERE ] updating countdown to 46737
+[17:32:14.571] [SEVERE ] updating countdown to 46627
+[17:32:14.679] [SEVERE ] updating countdown to 46519
+[17:32:14.788] [SEVERE ] updating countdown to 46410
+[17:32:14.896] [SEVERE ] updating countdown to 46302
+[17:32:15.004] [SEVERE ] updating countdown to 46194
+[17:32:15.112] [SEVERE ] updating countdown to 46086
+[17:32:15.220] [SEVERE ] updating countdown to 45978
+[17:32:15.330] [SEVERE ] updating countdown to 45868
+[17:32:15.439] [SEVERE ] updating countdown to 45759
+[17:32:15.549] [SEVERE ] updating countdown to 45649
+[17:32:15.658] [SEVERE ] updating countdown to 45540
+[17:32:15.769] [SEVERE ] updating countdown to 45429
+[17:32:15.878] [SEVERE ] updating countdown to 45320
+[17:32:15.986] [SEVERE ] updating countdown to 45212
+[17:32:16.094] [SEVERE ] updating countdown to 45104
+[17:32:16.202] [SEVERE ] updating countdown to 44996
+[17:32:16.312] [SEVERE ] updating countdown to 44886
+[17:32:16.419] [SEVERE ] updating countdown to 44779
+[17:32:16.520] [SEVERE ] updating countdown to 44678
+[17:32:16.631] [SEVERE ] updating countdown to 44567
+[17:32:16.732] [SEVERE ] updating countdown to 44466
+[17:32:16.833] [SEVERE ] updating countdown to 44365
+[17:32:16.935] [SEVERE ] updating countdown to 44263
+[17:32:17.050] [SEVERE ] updating countdown to 44148
+[17:32:17.151] [SEVERE ] updating countdown to 44047
+[17:32:17.251] [SEVERE ] updating countdown to 43947
+[17:32:17.352] [SEVERE ] updating countdown to 43847
+[17:32:17.461] [SEVERE ] updating countdown to 43737
+[17:32:17.566] [SEVERE ] updating countdown to 43632
+[17:32:17.682] [SEVERE ] updating countdown to 43516
+[17:32:17.785] [SEVERE ] updating countdown to 43413
+[17:32:17.900] [SEVERE ] updating countdown to 43298
+[17:32:18.016] [SEVERE ] updating countdown to 43182
+[17:32:18.118] [SEVERE ] updating countdown to 43080
+[17:32:18.233] [SEVERE ] updating countdown to 42965

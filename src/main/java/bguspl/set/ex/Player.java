@@ -93,13 +93,15 @@ public class Player implements Runnable {
             createArtificialIntelligence();
         while (!terminate) {
             if (cards.size() >= 3) {
-                synchronized (this) {
-                    dealer.contendersToSet.add(this);
-                    try {
-                        playerThread.wait();
-                    } catch (Exception e) {
+                dealer.contendersToSet.add(this);
+                try {
+                    while (cards.size() >= 3) {
+                        synchronized (this) {
+                            wait(); 
+                        } 
                     }
-                    notifyAll();                
+                } catch (Exception e) {
+                    System.out.println("fail");
                 }
             }
         }
@@ -153,7 +155,7 @@ public class Player implements Runnable {
      *
      * @param slot - the slot corresponding to the key pressed.
      */
-    public void keyPressed(int slot) {
+    public synchronized  void keyPressed(int slot) {
         if (cards.size() >= 3) {
             return;
         }
@@ -210,11 +212,11 @@ public class Player implements Runnable {
     public int[] getCards() {
         int[] cardsArray = new int[3];
         for (int i = 0; i < cardsArray.length; i++) {
-            cardsArray[i]=-1;
+            cardsArray[i] = -1;
         }
         int i = 0;
         for (int card : cards) {
-            cardsArray[i]=card;
+            cardsArray[i] = card;
             i++;
         }
         return cardsArray;

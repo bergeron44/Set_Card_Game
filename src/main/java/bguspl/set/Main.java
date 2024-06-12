@@ -1,16 +1,21 @@
 package bguspl.set;
 
-import bguspl.set.ex.Dealer;
-import bguspl.set.ex.Player;
-import bguspl.set.ex.Table;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+import bguspl.set.ex.Dealer;
+import bguspl.set.ex.Player;
+import bguspl.set.ex.Table;
 
 /**
  * This class contains the game's main function.
@@ -24,14 +29,17 @@ public class Main {
     private static Logger logger;
 
     public static void xButtonPressed() throws InterruptedException {
-        if (logger != null) logger.severe("exit button pressed");
+        if (logger != null)
+            logger.severe("exit button pressed");
         xButtonPressed = true;
-        if (dealer != null) dealer.terminate();
+        if (dealer != null)
+            dealer.terminate();
         mainThread.join();
     }
 
     /**
-     * The game's main function. Creates all data structures and initializes the threads.
+     * The game's main function. Creates all data structures and initializes the
+     * threads.
      *
      * @param args - unused.
      */
@@ -64,32 +72,42 @@ public class Main {
         dealer = new Dealer(env, table, players);
         for (int i = 0; i < players.length; i++)
             players[i] = new Player(env, dealer, table, i, i < env.config.humanPlayers);
-
+        
         // start the dealer thread
         ThreadLogger dealerThread = new ThreadLogger(dealer, "dealer", logger);
         dealerThread.startWithLog();
 
+        //start players threads
+        ThreadLogger[] playersThreads = new ThreadLogger[players.length];
+        for (int i = 0; i < players.length; i++) {
+            playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
+            playersThreads[i].startWithLog();
+        }
+
         try {
             // shutdown stuff
             dealerThread.joinWithLog();
-            if (!xButtonPressed && config.endGamePauseMillies > 0) Thread.sleep(config.endGamePauseMillies);
+            if (!xButtonPressed && config.endGamePauseMillies > 0)
+                Thread.sleep(config.endGamePauseMillies);
         } catch (InterruptedException ignored) {
         } finally {
             logger.severe("thanks for playing... it was fun!");
             System.out.println("Thanks for playing... it was fun!");
             ThreadLogger.logStop(logger, Thread.currentThread().getName());
-            if (!xButtonPressed) env.ui.dispose();
-            for (Handler h : logger.getHandlers()) h.flush();
+            if (!xButtonPressed)
+                env.ui.dispose();
+            for (Handler h : logger.getHandlers())
+                h.flush();
         }
     }
 
     private static Logger initLogger() {
 
-        //just to make our log file nicer :)
+        // just to make our log file nicer :)
         SimpleDateFormat format = new SimpleDateFormat("M-d_HH-mm-ss");
         FileHandler handler;
         try {
-            //noinspection ResultOfMethodCallIgnored
+            // noinspection ResultOfMethodCallIgnored
             new File("./logs/").mkdirs();
             handler = new FileHandler("./logs/" + format.format(Calendar.getInstance().getTime()) + ".log");
         } catch (IOException e) {
@@ -106,15 +124,15 @@ public class Main {
 
     public static void setLoggerLevelAndFormat(Logger logger, Level level, String format) {
         Handler[] handlers = logger.getHandlers();
-        if (handlers != null) Arrays.stream(handlers).forEach(h -> h.setFormatter(new SimpleFormatter() {
-            // default format (with timestamp)  = "[%1$tF %1$tT] [%2$-7s] %3$s%n";
-            @Override
-            public synchronized String format(LogRecord lr) {
-                return String.format(format, new Date(lr.getMillis()),
-                        lr.getLevel().getLocalizedName(), lr.getMessage()
-                );
-            }
-        }));
+        if (handlers != null)
+            Arrays.stream(handlers).forEach(h -> h.setFormatter(new SimpleFormatter() {
+                // default format (with timestamp) = "[%1$tF %1$tT] [%2$-7s] %3$s%n";
+                @Override
+                public synchronized String format(LogRecord lr) {
+                    return String.format(format, new Date(lr.getMillis()),
+                            lr.getLevel().getLocalizedName(), lr.getMessage());
+                }
+            }));
         logger.setLevel(level);
     }
 }

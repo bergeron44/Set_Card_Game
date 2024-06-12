@@ -1,14 +1,13 @@
 package bguspl.set.ex;
 
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import bguspl.set.Env;
-import bguspl.set.ThreadLogger;
 
 /**
  * This class manages the dealer's threads and data
@@ -25,8 +24,7 @@ public class Dealer implements Runnable {
      */
     private final Table table;
     private final Player[] players;
-    private final ThreadLogger[] playersThreads;
-    public final Queue<Player> contendersToSet;
+    public final BlockingQueue<Player> contendersToSet;
     /**
      * The list of card ids that are left in the dealer's deck.
      */
@@ -46,12 +44,8 @@ public class Dealer implements Runnable {
         this.env = env;
         this.table = table;
         this.players = players;
-        playersThreads = new ThreadLogger[players.length];
-        for (int i = 0; i < players.length; i++) {
-            playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
-        }
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
-        contendersToSet = new PriorityQueue<>();
+        contendersToSet = new LinkedBlockingQueue<>();
 
     }
 
@@ -61,13 +55,6 @@ public class Dealer implements Runnable {
     @Override
     public void run() {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
-        try {
-            for (ThreadLogger playerThread : playersThreads) {
-                playerThread.run();
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
 
         System.out.println("players are running");
         while (!shouldFinish()) {
@@ -150,6 +137,10 @@ public class Dealer implements Runnable {
             } else {
                 player.penalty();
             }
+
+            synchronized (this) {
+                this.notifyAll();
+            }
         }
 
     }
@@ -179,9 +170,8 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
         try {
-            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
-            while (contendersToSet.size()<=0&&reshuffleTime - System.currentTimeMillis()>0) {
-                synchronized(this){
+            while (contendersToSet.size() == 0 && reshuffleTime - System.currentTimeMillis() > 0) {
+                synchronized (this) {
                     this.wait(100);
                 }
                 updateTimerDisplay(false);
@@ -203,22 +193,16 @@ public class Dealer implements Runnable {
     /**
      * Reset and/or update the countdown and the countdown display.
      */
-    private synchronized void updateTimerDisplay(boolean reset) {// מעדכן את השעון יש 4 שניות שיש להפוך לאדום
+    private synchronized void updateTimerDisplay(boolean reset) {
         // TODO implement
         if (reset) {
-            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
+            this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
             env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), false);
-            // env.ui.setElapsed(this.reshuffleTime - System.currentTimeMillis());
         } else {
             if (this.reshuffleTime - System.currentTimeMillis() < env.config.turnTimeoutWarningMillis) {
                 env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), true);
             } else
                 env.ui.setCountdown(this.reshuffleTime - System.currentTimeMillis(), false);
-            // env.ui.setElapsed(this.reshuffleTime - System.currentTimeMillis());
-            // if (warning) {
-            // this.warning = false;
-            // env.ui.setCountdown(env.config.turnTimeoutWarningMillis, true);
-            // env.ui.setElapsed(timeout);
         }
     }
 
