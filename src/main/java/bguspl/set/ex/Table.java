@@ -1,14 +1,11 @@
 package bguspl.set.ex;
 
-import bguspl.set.Env;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Vector;
 import java.util.stream.Collectors;
+
+import bguspl.set.Env;
 
 /**
  * This class contains the data that is visible to the player.
@@ -144,7 +141,7 @@ public class Table {
         if (!tokenLegalSlot(slot))
             return false;
 
-            env.ui.removeToken(player, slot);
+        env.ui.removeToken(player, slot);
 
         return true;
 

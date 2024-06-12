@@ -77,13 +77,6 @@ public class Main {
         ThreadLogger dealerThread = new ThreadLogger(dealer, "dealer", logger);
         dealerThread.startWithLog();
 
-        //start players threads
-        ThreadLogger[] playersThreads = new ThreadLogger[players.length];
-        for (int i = 0; i < players.length; i++) {
-            playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
-            playersThreads[i].startWithLog();
-        }
-
         try {
             // shutdown stuff
             dealerThread.joinWithLog();

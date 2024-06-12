@@ -97,8 +97,8 @@ public class Player implements Runnable {
                 try {
                     while (cards.size() >= 3) {
                         synchronized (this) {
-                            wait(); 
-                        } 
+                            wait();
+                        }
                     }
                 } catch (Exception e) {
                     System.out.println("fail");
@@ -147,7 +147,6 @@ public class Player implements Runnable {
         if (!human) {
             aiThread.interrupt();
         }
-        playerThread.interrupt();
     }
 
     /**
@@ -155,7 +154,7 @@ public class Player implements Runnable {
      *
      * @param slot - the slot corresponding to the key pressed.
      */
-    public synchronized  void keyPressed(int slot) {
+    public synchronized void keyPressed(int slot) {
         if (cards.size() >= 3) {
             return;
         }
@@ -204,6 +203,15 @@ public class Player implements Runnable {
             }
         }
         return false;
+    }
+
+    public boolean removeTokens() {
+        try {
+            cards.clear();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

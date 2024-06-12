@@ -1,6 +1,6 @@
 package bguspl.set.ex;
-import java.util.*;
-import bguspl.set.Env;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
@@ -8,12 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-
-
-
-
-
-
+import bguspl.set.Env;
+import bguspl.set.ThreadLogger;
 
 /**
  * This class manages the dealer's threads and data
@@ -46,10 +42,13 @@ public class Dealer implements Runnable {
      */
     private long reshuffleTime = Long.MAX_VALUE;
 
+    private final ThreadLogger[] playersThreads;
+
     public Dealer(Env env, Table table, Player[] players) {
         this.env = env;
         this.table = table;
         this.players = players;
+        this.playersThreads = new ThreadLogger[players.length];
         deck = IntStream.range(0, env.config.deckSize).boxed().collect(Collectors.toList());
         contendersToSet = new LinkedBlockingQueue<>();
 
@@ -62,10 +61,11 @@ public class Dealer implements Runnable {
     public void run() {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
 
-        for (Player player : players) {
-            new Thread(player, env.config.playerNames[player.id]).start();
+        // start players threads
+        for (int i = 0; i < players.length; i++) {
+            playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
+            playersThreads[i].startWithLog();
         }
-        System.out.println("players are running");
 
         while (!shouldFinish()) {
             placeCardsOnTable();
@@ -73,11 +73,14 @@ public class Dealer implements Runnable {
             updateTimerDisplay(false);
             removeAllCardsFromTable();
         }
-        announceWinners();
-         for (int i = players.length - 1; i >= 0; i--) {
-            players[i].terminate();
-            players[i].join();
+        try {
+            for (ThreadLogger threadLogger : playersThreads) {
+                threadLogger.join();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
         }
+        announceWinners();
         env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
     }
 
@@ -99,11 +102,10 @@ public class Dealer implements Runnable {
      * Called when the game should be terminated.
      */
     public void terminate() {
-        // TODO implement
-        for (Player player : players) {
-            player.terminate();
-        }
         terminate = true;
+        for (ThreadLogger threadLogger : playersThreads) {
+            threadLogger.interrupt();
+        }
     }
 
     /**
@@ -133,14 +135,14 @@ public class Dealer implements Runnable {
                     isSet = false;
             }
             isSet = env.util.testSet(playerCards);
-            player.point();
 
             // Reaching this code isSet tells us whether the player has a legitimate set
             if (isSet) {
                 synchronized (table) {
+                    player.point();
                     updateTimerDisplay(true);
                     for (int card : playerCards) {
-                        table.removeCard(card);
+                        table.removeCard(table.cardToSlot[card]);
                     }
                     for (Player p : players) {
                         for (int card : playerCards) {
@@ -164,6 +166,7 @@ public class Dealer implements Runnable {
      */
     private void placeCardsOnTable() {
         // TODO implement
+        Collections.shuffle(deck);
         int startingCards = table.countCards();
         for (Integer i = startingCards; i < 12; i++)
             if (!deck.isEmpty())
@@ -184,21 +187,13 @@ public class Dealer implements Runnable {
     private void sleepUntilWokenOrTimeout() {
         // TODO implement
         try {
-            while (contendersToSet.size() == 0 && reshuffleTime - System.currentTimeMillis() > 0) {
+            while (contendersToSet.isEmpty() && reshuffleTime - System.currentTimeMillis() > 0) {
                 synchronized (this) {
                     this.wait(100);
                 }
                 updateTimerDisplay(false);
             }
-            // if (System.currentTimeMillis() > timeout) {
-            // this.warning = true;
-            // System.out.println("start warning time");
-            // updateTimerDisplay(false);
-            // timeout = System.currentTimeMillis() + env.config.turnTimeoutWarningMillis;
-            // synchronized (this) {
-            // this.wait(timeout - System.currentTimeMillis());
-            // }
-            // }
+            System.out.println("some ");
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -225,16 +220,13 @@ public class Dealer implements Runnable {
      */
     private void removeAllCardsFromTable() {
         for (Integer i = 0; i < 12; i++) {
-            deck.add(i);
+            deck.add(table.slotToCard[i]);
             table.removeCard(i);
         }
-
-        for (Integer i = 0; i < 12; i++) {
-            if (!deck.isEmpty()) {
-                table.placeCard(0, i);
-                deck.remove(0);
-            }
+        for (Player player : players) {
+            player.removeTokens();
         }
+        env.ui.removeTokens();
     }
 
     /**
