@@ -109,12 +109,11 @@ public class Table {
     public void removeCard(int slot) {
         if (!legalSlot(slot))
             throw new RuntimeException();
-        try {
-            Thread.sleep(env.config.tableDelayMillis);
-        } catch (InterruptedException ignored) {}
         
-
-        // TODO implement
+        cardToSlot[slotToCard[slot]] = -1;
+        slotToCard[slot] = -1;
+        env.ui.removeCard(slot);
+        
     }
 
     /**
