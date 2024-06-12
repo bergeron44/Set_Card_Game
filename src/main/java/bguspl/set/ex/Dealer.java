@@ -1,5 +1,6 @@
 package bguspl.set.ex;
-
+import java.util.*;
+import bguspl.set.Env;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
@@ -7,7 +8,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import bguspl.set.Env;
+
+
+
+
+
+
 
 /**
  * This class manages the dealer's threads and data
@@ -56,7 +62,11 @@ public class Dealer implements Runnable {
     public void run() {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
 
+        for (Player player : players) {
+            new Thread(player, env.config.playerNames[player.id]).start();
+        }
         System.out.println("players are running");
+
         while (!shouldFinish()) {
             placeCardsOnTable();
             timerLoop();
@@ -64,6 +74,10 @@ public class Dealer implements Runnable {
             removeAllCardsFromTable();
         }
         announceWinners();
+         for (int i = players.length - 1; i >= 0; i--) {
+            players[i].terminate();
+            players[i].join();
+        }
         env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
     }
 
