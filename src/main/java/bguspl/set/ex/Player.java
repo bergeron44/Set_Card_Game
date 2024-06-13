@@ -184,6 +184,7 @@ public class Player implements Runnable {
      */
     public void penalty() {
         // TODO implement
+        cards.clear();
         env.ui.setFreeze(id, env.config.penaltyFreezeMillis);
     }
 
