@@ -175,8 +175,8 @@ public class Player implements Runnable {
         env.ui.setFreeze(id, env.config.pointFreezeMillis);
         score++;
         env.ui.setScore(id, score);
-        int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        env.ui.setScore(id, ++score);
+        //int ignored = table.countCards(); // this part is just for demonstration in the unit tests
+        //env.ui.setScore(id, ++score);
     }
 
     /**

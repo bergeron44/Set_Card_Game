@@ -142,13 +142,14 @@ public class Dealer implements Runnable {
                     player.point();
                     updateTimerDisplay(true);
                     for (int card : playerCards) {
-                        table.removeCard(table.cardToSlot[card]);
-                    }
-                    for (int card : playerCards) {
                         for (Player p : players) {
                             p.removeToken(table.cardToSlot[card]);
                         }
                     }
+                    for (int card : playerCards) {
+                        table.removeCard(table.cardToSlot[card]);
+                    }
+                    
                 }
             } else {
                 player.penalty();

@@ -102,9 +102,6 @@ public class Table {
      * Removes a card from a grid slot on the table.
      * @param slot - the slot from which to remove the card.
      */
-    private synchronized boolean legalSlot(int slot) {
-        return slot < slotToCard.length;
-    }
     public void removeCard(int slot) {
         if (!legalSlot(slot))
             throw new RuntimeException();
@@ -113,6 +110,10 @@ public class Table {
         slotToCard[slot] = null;
         env.ui.removeCard(slot);
         
+    }
+
+    private synchronized boolean legalSlot(int slot) {
+        return slot < slotToCard.length;
     }
 
     /**
