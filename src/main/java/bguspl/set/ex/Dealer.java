@@ -135,7 +135,6 @@ public class Dealer implements Runnable {
                     isSet = false;
             }
             isSet = env.util.testSet(playerCards);
-
             // Reaching this code isSet tells us whether the player has a legitimate set
             if (isSet) {
                 synchronized (table) {
@@ -154,9 +153,8 @@ public class Dealer implements Runnable {
                     player.removeToken(table.cardToSlot[card]);
                 }
             }
-
-            synchronized (this) {
-                this.notifyAll();
+            synchronized (player) {
+                player.notifyAll();
             }
         }
 
@@ -169,12 +167,20 @@ public class Dealer implements Runnable {
         // TODO implement
         Collections.shuffle(deck);
         int startingCards = table.countCards();
-        for (Integer i = startingCards; i < 12; i++)
-            if (!deck.isEmpty())
-                synchronized (table) {
-                    table.placeCard(deck.get(0), i);
-                    deck.remove(0);
+        synchronized (table) {
+            for (Integer i = 0; i < 12; i++) {
+                if (!deck.isEmpty()) {
+
+                    if (table.slotToCard[i] == null) {
+                        table.placeCard(deck.get(0), i);
+                        deck.remove(0);
+                    }
                 }
+                else {
+                    terminate();
+                }
+            }
+        }
 
         if (table.countCards() > startingCards && env.config.hints)
             table.hints();

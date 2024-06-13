@@ -98,6 +98,7 @@ public class Player implements Runnable {
                     while (cards.size() >= 3) {
                         synchronized (this) {
                             wait();
+                            System.out.println("i am awake again");
                         }
                     }
                 } catch (Exception e) {
