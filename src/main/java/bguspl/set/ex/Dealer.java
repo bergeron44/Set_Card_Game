@@ -103,8 +103,8 @@ public class Dealer implements Runnable {
      */
     public void terminate() {
         terminate = true;
-        for (ThreadLogger threadLogger : playersThreads) {
-            threadLogger.interrupt();
+        for (Player player : players) {
+            player.terminate();
         }
     }
 
@@ -148,10 +148,10 @@ public class Dealer implements Runnable {
                     }
                 }
             } else {
-                player.penalty();
                 for (int card : playerCards) {
                     player.removeToken(table.cardToSlot[card]);
                 }
+                player.penalty();
             }
             synchronized (player) {
                 player.notifyAll();
@@ -195,12 +195,12 @@ public class Dealer implements Runnable {
         // TODO implement
         try {
             while (contendersToSet.isEmpty() && reshuffleTime - System.currentTimeMillis() > 0) {
+                if(terminate) break;
                 synchronized (this) {
                     this.wait(100);
                 }
                 updateTimerDisplay(false);
             }
-            System.out.println("some ");
         } catch (Exception e) {
             // TODO: handle exception
         }
@@ -257,34 +257,5 @@ public class Dealer implements Runnable {
         }
         env.ui.announceWinner(winnersID);
         terminate();
-    }
-
-    /**
-     * Checks if the player have a set and reward/panish him accordingly
-     */
-    public void isSet(int[] slots, int id) {
-        if (env.util.testSet(slots)) {
-            synchronized (table) {
-                updateTimerDisplay(false);
-                for (int card : slots) {
-                    table.removeCard(card);
-                }
-                for (Player player : players) {
-                    for (int slot : slots) {
-                        player.removeToken(slot);
-                    }
-                    if (player.id == id) {
-                        player.point();
-                    }
-                }
-            }
-        } else {
-            for (Player player : players) {
-                if (player.id == id) {
-                    player.penalty();
-                    break;
-                }
-            }
-        }
     }
 }

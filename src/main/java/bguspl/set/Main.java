@@ -72,7 +72,7 @@ public class Main {
         dealer = new Dealer(env, table, players);
         for (int i = 0; i < players.length; i++)
             players[i] = new Player(env, dealer, table, i, i < env.config.humanPlayers);
-        
+
         // start the dealer thread
         ThreadLogger dealerThread = new ThreadLogger(dealer, "dealer", logger);
         dealerThread.startWithLog();

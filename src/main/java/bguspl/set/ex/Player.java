@@ -63,6 +63,16 @@ public class Player implements Runnable {
     private int score;
 
     /**
+     * The penelty time of the player
+     */
+    private long peneltyTime;
+
+    /**
+     * Lock for removeToken() and getCards()
+     */
+    private final Object lockObject;
+
+    /**
      * The class constructor.
      *
      * @param env    - the environment object.
@@ -78,6 +88,8 @@ public class Player implements Runnable {
         this.table = table;
         this.id = id;
         this.human = human;
+        this.peneltyTime = 0;
+        this.lockObject = new Object();
         this.cards = new Stack<>();
     }
 
@@ -96,13 +108,20 @@ public class Player implements Runnable {
                 dealer.contendersToSet.add(this);
                 try {
                     while (cards.size() >= 3) {
+                        if (terminate)
+                            break;
                         synchronized (this) {
                             wait();
-                            System.out.println("i am awake again");
+                            while (peneltyTime - System.currentTimeMillis() >= 0) {
+                                if (terminate)
+                                    break;
+                                env.ui.setFreeze(id, peneltyTime - System.currentTimeMillis());
+                                wait(100);
+                            }
+                            env.ui.setFreeze(id, -1);
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("fail");
                 }
             }
         }
@@ -155,13 +174,20 @@ public class Player implements Runnable {
      *
      * @param slot - the slot corresponding to the key pressed.
      */
-    public synchronized void keyPressed(int slot) {
-        if (cards.size() >= 3) {
-            return;
-        }
-        if (!removeToken(slot)) {
-            cards.push(table.slotToCard[slot]);
-            table.placeToken(id, slot);
+    public void keyPressed(int slot) {
+        synchronized (this) {
+            synchronized (lockObject) {
+                if (terminate || cards.size() >= 3 || this.peneltyTime - System.currentTimeMillis() >= 0) {
+                    if (cards.size() >= 3) {
+
+                    }
+                    return;
+                }
+                if (!removeToken(slot)) {
+                    cards.push(table.slotToCard[slot]);
+                    table.placeToken(id, slot);
+                }
+            }
         }
     }
 
@@ -176,8 +202,10 @@ public class Player implements Runnable {
         env.ui.setFreeze(id, env.config.pointFreezeMillis);
         score++;
         env.ui.setScore(id, score);
-        //int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        //env.ui.setScore(id, ++score);
+        peneltyTime = System.currentTimeMillis() + env.config.pointFreezeMillis;
+        // int ignored = table.countCards(); // this part is just for demonstration in
+        // the unit tests
+        // env.ui.setScore(id, ++score);
     }
 
     /**
@@ -186,7 +214,7 @@ public class Player implements Runnable {
     public void penalty() {
         // TODO implement
         cards.clear();
-        env.ui.setFreeze(id, env.config.penaltyFreezeMillis);
+        peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
     }
 
     public int score() {
@@ -197,20 +225,25 @@ public class Player implements Runnable {
      * Remove the token from cards
      */
     public boolean removeToken(int slot) {
-        for (Integer card : cards) {
-            if (card == table.slotToCard[slot]) {
-                cards.remove(card);
-                table.removeToken(id, slot);
-                return true;
+        synchronized (lockObject) {
+            for (Integer card : cards) {
+                if (card == table.slotToCard[slot]) {
+                    cards.remove(card);
+                    table.removeToken(id, slot);
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     public boolean removeTokens() {
+
         try {
-            cards.clear();
-            return true;
+            synchronized (lockObject) {
+                cards.clear();
+                return true;
+            }
         } catch (Exception e) {
             return false;
         }
@@ -224,10 +257,12 @@ public class Player implements Runnable {
         for (int i = 0; i < cardsArray.length; i++) {
             cardsArray[i] = -1;
         }
-        int i = 0;
-        for (int card : cards) {
-            cardsArray[i] = card;
-            i++;
+        synchronized (lockObject) {
+            int i = 0;
+            for (i = 0; i < cardsArray.length; i++) {
+                cardsArray[i] = cards.get(id);
+                i++;
+            }
         }
         return cardsArray;
     }
