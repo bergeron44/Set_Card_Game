@@ -145,13 +145,7 @@ public class Player implements Runnable {
             env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
             while (!terminate) {
                 // TODO implement player key press simulator
-                try {
-                    synchronized (this) {
-                        keyPressed((int) (Math.random() * table.countCards()));
-                        wait();
-                    }
-                } catch (InterruptedException ignored) {
-                }
+                keyPressed((int) (Math.random() * table.countCards()));
             }
             env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
@@ -177,10 +171,7 @@ public class Player implements Runnable {
     public void keyPressed(int slot) {
         synchronized (this) {
             synchronized (lockObject) {
-                if (terminate || cards.size() >= 3 || this.peneltyTime - System.currentTimeMillis() >= 0) {
-                    if (cards.size() >= 3) {
-
-                    }
+                if (terminate || cards.size() >= 3 || this.peneltyTime - System.currentTimeMillis() >= 0||cards.size() >= 3) {
                     return;
                 }
                 if (!removeToken(slot)) {
@@ -197,13 +188,13 @@ public class Player implements Runnable {
      * @post - the player's score is increased by 1.
      * @post - the player's score is updated in the ui.
      */
-    public void point() {
+    public synchronized  void point() {
         // TODO implement
         env.ui.setFreeze(id, env.config.pointFreezeMillis);
         score++;
         env.ui.setScore(id, score);
         peneltyTime = System.currentTimeMillis() + env.config.pointFreezeMillis;
-        // int ignored = table.countCards(); // this part is just for demonstration in
+        int ignored = table.countCards(); // this part is just for demonstration in
         // the unit tests
         // env.ui.setScore(id, ++score);
     }
@@ -211,7 +202,7 @@ public class Player implements Runnable {
     /**
      * Penalize a player and perform other related actions.
      */
-    public void penalty() {
+    public synchronized  void penalty() {
         // TODO implement
         cards.clear();
         peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
@@ -225,7 +216,7 @@ public class Player implements Runnable {
      * Remove the token from cards
      */
     public boolean removeToken(int slot) {
-        synchronized (lockObject) {
+        synchronized (this) {
             for (Integer card : cards) {
                 if (card == table.slotToCard[slot]) {
                     cards.remove(card);
@@ -240,7 +231,7 @@ public class Player implements Runnable {
     public boolean removeTokens() {
 
         try {
-            synchronized (lockObject) {
+            synchronized (this) {
                 cards.clear();
                 return true;
             }

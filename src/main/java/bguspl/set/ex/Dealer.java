@@ -128,6 +128,9 @@ public class Dealer implements Runnable {
 
         while (!contendersToSet.isEmpty()) {
             Player player = contendersToSet.remove();
+            synchronized (player) {
+                
+            
             int[] playerCards = player.getCards();
             boolean isSet = true;
             for (int i = 0; i < 3; i++) {
@@ -153,10 +156,10 @@ public class Dealer implements Runnable {
                 }
                 player.penalty();
             }
-            synchronized (player) {
                 player.notifyAll();
             }
         }
+
 
     }
 
