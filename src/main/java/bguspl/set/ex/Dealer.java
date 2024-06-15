@@ -129,8 +129,6 @@ public class Dealer implements Runnable {
         while (!contendersToSet.isEmpty()) {
             Player player = contendersToSet.remove();
             synchronized (player) {
-                
-            
             int[] playerCards = player.getCards();
             boolean isSet = true;
             for (int i = 0; i < 3; i++) {
@@ -212,7 +210,7 @@ public class Dealer implements Runnable {
     /**
      * Reset and/or update the countdown and the countdown display.
      */
-    private synchronized void updateTimerDisplay(boolean reset) {
+    private void updateTimerDisplay(boolean reset) {
         // TODO implement
         if (reset) {
             this.reshuffleTime = System.currentTimeMillis() + env.config.turnTimeoutMillis;
