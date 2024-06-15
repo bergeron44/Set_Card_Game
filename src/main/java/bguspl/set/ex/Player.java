@@ -68,6 +68,11 @@ public class Player implements Runnable {
     private long peneltyTime;
 
     /**
+     * The player Lock
+     */
+    private final Object playerLock;
+
+    /**
      * The class constructor.
      *
      * @param env    - the environment object.
@@ -85,6 +90,7 @@ public class Player implements Runnable {
         this.human = human;
         this.peneltyTime = 0;
         this.cards = new Stack<>();
+        this.playerLock=new Object();
     }
 
     /**
