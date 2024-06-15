@@ -78,6 +78,7 @@ public class Player implements Runnable {
         this.table = table;
         this.id = id;
         this.human = human;
+        this.peneltyTime = 0;
         this.cards = new Stack<>();
     }
 
