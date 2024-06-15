@@ -148,8 +148,8 @@ public class Player implements Runnable {
      * Called when the game should be terminated.
      */
     public void terminate() {
-        // TODO implement
         terminate = true;
+        playerThread.interrupt();
         if (!human) {
             aiThread.interrupt();
         }
@@ -190,6 +190,9 @@ public class Player implements Runnable {
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
+        for (int card : cards) {
+            removeToken(table.cardToSlot[card]);
+        }
         cards.clear();
         peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
     }
@@ -230,12 +233,18 @@ public class Player implements Runnable {
         for (int i = 0; i < cardsArray.length; i++) {
             cardsArray[i] = -1;
         }
-        int i = 0;
-        for (i = 0; i < cardsArray.length; i++) {
+        for (int i = 0; i < cardsArray.length; i++) {
             cardsArray[i] = cards.get(id);
             i++;
         }
         return cardsArray;
+    }
+
+    public void join(){
+        try {
+            playerThread.join();
+        } catch (InterruptedException e) {
+        }
     }
 
 }
