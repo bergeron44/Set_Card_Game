@@ -73,6 +73,15 @@ public class Player implements Runnable {
     private final Object playerLock;
 
     /**
+     * The player Lock
+     */
+    private final Object initalizationLock;
+
+    private boolean initializationDoneFlag;
+
+    private boolean aiStartedFlag;
+
+    /**
      * The class constructor.
      *
      * @param env    - the environment object.
@@ -90,7 +99,10 @@ public class Player implements Runnable {
         this.human = human;
         this.peneltyTime = 0;
         this.cards = new Stack<>();
-        this.playerLock=new Object();
+        this.playerLock = new Object();
+        this.initalizationLock = new Object();
+        this.initializationDoneFlag = false;
+        this.aiStartedFlag = false;
     }
 
     /**
@@ -101,32 +113,35 @@ public class Player implements Runnable {
     public void run() {
         playerThread = Thread.currentThread();
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
-        if (!human)
-            createArtificialIntelligence();
+        synchronized (initalizationLock) {
+            if (!human)
+                createArtificialIntelligence();
+            initializationDoneFlag = true;
+            initalizationLock.notifyAll();
+        }
         while (!terminate) {
             if (cards.size() >= 3) {
-                dealer.contendersToSet.add(this);
-                try {
-                    while (cards.size() >= 3) {
-                        if (terminate)
-                            break;
-                        wait();
-                        while (peneltyTime - System.currentTimeMillis() >= 0) {
-                            if (terminate)
-                                break;
+                dealer.declareSet(this);
+                synchronized (playerLock) {
+                    try {
+                        playerLock.notifyAll();
+                        playerLock.wait();
+                        while (peneltyTime - System.currentTimeMillis() >= 0 && !terminate) {
                             env.ui.setFreeze(id, peneltyTime - System.currentTimeMillis());
-                            wait(100);
+                            playerLock.wait(100);
                         }
                         env.ui.setFreeze(id, -1);
+                    } catch (InterruptedException e) {
                     }
-                } catch (Exception e) {
                 }
             }
         }
         if (!human)
             try {
                 aiThread.join();
-            } catch (InterruptedException ignored) {
+            } catch (
+
+            InterruptedException ignored) {
             }
         env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
     }
@@ -141,13 +156,27 @@ public class Player implements Runnable {
         // note: this is a very, very smart AI (!)
         aiThread = new Thread(() -> {
             env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
+            synchronized (initalizationLock) {
+                aiStartedFlag = true;
+                initalizationLock.notifyAll();
+            }
             while (!terminate) {
-                // TODO implement player key press simulator
-                keyPressed((int) (Math.random() * table.countCards()));
+                keyPressed((int) (Math.random() * 12));
             }
             env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
         aiThread.start();
+    }
+
+    public void waitForInitializationComplete() {
+        synchronized (initalizationLock) {
+            while (!initializationDoneFlag || (!human && !aiStartedFlag)) {
+                try {
+                    initalizationLock.wait();
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
     }
 
     /**
@@ -167,12 +196,16 @@ public class Player implements Runnable {
      * @param slot - the slot corresponding to the key pressed.
      */
     public void keyPressed(int slot) {
-        if (terminate || cards.size() >= 3 || this.peneltyTime - System.currentTimeMillis() >= 0 || cards.size() >= 3) {
-            return;
-        }
-        if (!removeToken(slot)) {
-            cards.push(table.slotToCard[slot]);
-            table.placeToken(id, slot);
+        synchronized (table) {
+            synchronized (playerLock) {
+                if (terminate || peneltyTime - System.currentTimeMillis() >= 0 || cards.size() >= 3) {
+                    return;
+                }
+                if (!removeToken(slot)) {
+                    cards.push(table.slotToCard[slot]);
+                    table.placeToken(id, slot);
+                }
+            }
         }
     }
 
@@ -183,10 +216,17 @@ public class Player implements Runnable {
      * @post - the player's score is updated in the ui.
      */
     public void point() {
-        env.ui.setFreeze(id, env.config.pointFreezeMillis);
-        score++;
-        env.ui.setScore(id, score);
-        peneltyTime = System.currentTimeMillis() + env.config.pointFreezeMillis;
+        synchronized (playerLock) {
+            env.ui.setFreeze(id, env.config.pointFreezeMillis);
+            score++;
+            env.ui.setScore(id, score);
+            peneltyTime = System.currentTimeMillis() + env.config.pointFreezeMillis;
+            try {
+                playerLock.notifyAll();
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
         int ignored = table.countCards(); // this part is just for demonstration in
         // the unit tests
         // env.ui.setScore(id, ++score);
@@ -196,11 +236,17 @@ public class Player implements Runnable {
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        for (int card : cards) {
-            removeToken(table.cardToSlot[card]);
+        synchronized (playerLock) {
+            while (!cards.isEmpty()) {
+                removeToken(table.cardToSlot[cards.get(0)]);
+            }
+            peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
+            try {
+                playerLock.notifyAll();
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
         }
-        cards.clear();
-        peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
     }
 
     public int score() {
@@ -222,7 +268,6 @@ public class Player implements Runnable {
     }
 
     public boolean removeTokens() {
-
         try {
             cards.clear();
             return true;
@@ -239,18 +284,28 @@ public class Player implements Runnable {
         for (int i = 0; i < cardsArray.length; i++) {
             cardsArray[i] = -1;
         }
-        for (int i = 0; i < cardsArray.length; i++) {
-            cardsArray[i] = cards.get(id);
-            i++;
+        for (int i = 0; i < cards.size(); i++) {
+            try {
+                cardsArray[i] = cards.get(i);
+            } catch (Exception e) {
+                return null;
+            }
         }
         return cardsArray;
     }
 
-    public void join(){
+    public void join() {
         try {
             playerThread.join();
         } catch (InterruptedException e) {
         }
+    }
+
+    public void wakeup() {
+        synchronized (playerLock) {
+            playerLock.notifyAll();
+        }
+
     }
 
 }

@@ -69,10 +69,12 @@ public class Dealer implements Runnable {
     public void run() {
         env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
 
+        placeCardsOnTable();
         // start players threads
         for (int i = 0; i < players.length; i++) {
             playersThreads[i] = new ThreadLogger(players[i], "player " + i, env.logger);
             playersThreads[i].startWithLog();
+            players[i].waitForInitializationComplete();
         }
 
         // the game start
@@ -83,7 +85,7 @@ public class Dealer implements Runnable {
             removeAllCardsFromTable();
         }
 
-        for (int i = players.length; i >= 0; i++) {
+        for (int i = players.length - 1; i >= 0; i--) {
             players[i].terminate();
             players[i].join();
         }
@@ -130,24 +132,32 @@ public class Dealer implements Runnable {
             return;
         }
         // start check if there is a set for one of the players
-        synchronized (dealerLock) {
-            while (!contendersToSet.isEmpty()) {
-                Player player = contendersToSet.remove();
-                int[] playerCards = player.getCards();
-                boolean isSet = env.util.testSet(playerCards);
-                // Reaching this code isSet tells us whether the player has a legitimate set
-                if (isSet) {
+        synchronized (table) {
+            synchronized (dealerLock) {
+                while (!contendersToSet.isEmpty()) {
+                    Player player = contendersToSet.remove();
+                    int[] playerCards = player.getCards();
+                    if (playerCards == null) {
+                        return;
+                    }
+                    boolean isSet = env.util.testSet(playerCards);
+                    // Reaching this code isSet tells us whether the player has a legitimate set
+                    if (isSet) {
                         player.point();
                         updateTimerDisplay(true);
                         for (int card : playerCards) {
                             for (Player p : players) {
-                                p.removeToken(table.cardToSlot[card]);
+                                if (p.removeToken(table.cardToSlot[card])) {
+                                    if (contendersToSet.remove(p))
+                                        p.wakeup();
+                                }
                             }
-                            deck.remove(card);
+                            deck.remove((Integer) card);
                             table.removeCard(table.cardToSlot[card]);
                         }
-                } else {
-                    player.penalty();
+                    } else {
+                        player.penalty();
+                    }
                 }
             }
         }
@@ -157,7 +167,6 @@ public class Dealer implements Runnable {
      * Check if any cards can be removed from the deck and placed on the table.
      */
     private void placeCardsOnTable() {
-        // TODO implement
         Collections.shuffle(deck);
         int startingCards = table.countCards();
         synchronized (table) {
@@ -218,6 +227,7 @@ public class Dealer implements Runnable {
             }
             for (Player player : players) {
                 player.removeTokens();
+                player.wakeup();
             }
             env.ui.removeTokens();
         }
@@ -244,5 +254,16 @@ public class Dealer implements Runnable {
         }
         env.ui.announceWinner(winnersID);
         terminate();
+    }
+
+    public void declareSet(Player player) {
+        boolean spin = false;
+        while (!spin) {
+            synchronized (dealerLock) {
+                contendersToSet.add(player);
+                dealerLock.notifyAll();
+                spin = true;
+            }
+        }
     }
 }
