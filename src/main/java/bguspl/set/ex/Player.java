@@ -63,6 +63,11 @@ public class Player implements Runnable {
     private int score;
 
     /**
+     * The penelty time of the player
+     */
+    private long peneltyTime;
+
+    /**
      * The class constructor.
      *
      * @param env    - the environment object.
@@ -97,12 +102,18 @@ public class Player implements Runnable {
                 dealer.contendersToSet.add(this);
                 try {
                     while (cards.size() >= 3) {
-                        synchronized (this) {
-                            wait();
+                        if (terminate)
+                            break;
+                        wait();
+                        while (peneltyTime - System.currentTimeMillis() >= 0) {
+                            if (terminate)
+                                break;
+                            env.ui.setFreeze(id, peneltyTime - System.currentTimeMillis());
+                            wait(100);
                         }
+                        env.ui.setFreeze(id, -1);
                     }
                 } catch (Exception e) {
-                    System.out.println("fail");
                 }
             }
         }
@@ -126,13 +137,7 @@ public class Player implements Runnable {
             env.logger.info("thread " + Thread.currentThread().getName() + " starting.");
             while (!terminate) {
                 // TODO implement player key press simulator
-                try {
-                    synchronized (this) {
-                        keyPressed((int) (Math.random() * table.countCards()));
-                        wait();
-                    }
-                } catch (InterruptedException ignored) {
-                }
+                keyPressed((int) (Math.random() * table.countCards()));
             }
             env.logger.info("thread " + Thread.currentThread().getName() + " terminated.");
         }, "computer-" + id);
@@ -155,8 +160,8 @@ public class Player implements Runnable {
      *
      * @param slot - the slot corresponding to the key pressed.
      */
-    public synchronized void keyPressed(int slot) {
-        if (cards.size() >= 3) {
+    public void keyPressed(int slot) {
+        if (terminate || cards.size() >= 3 || this.peneltyTime - System.currentTimeMillis() >= 0 || cards.size() >= 3) {
             return;
         }
         if (!removeToken(slot)) {
@@ -172,21 +177,21 @@ public class Player implements Runnable {
      * @post - the player's score is updated in the ui.
      */
     public void point() {
-        // TODO implement
         env.ui.setFreeze(id, env.config.pointFreezeMillis);
         score++;
         env.ui.setScore(id, score);
-        //int ignored = table.countCards(); // this part is just for demonstration in the unit tests
-        //env.ui.setScore(id, ++score);
+        peneltyTime = System.currentTimeMillis() + env.config.pointFreezeMillis;
+        int ignored = table.countCards(); // this part is just for demonstration in
+        // the unit tests
+        // env.ui.setScore(id, ++score);
     }
 
     /**
      * Penalize a player and perform other related actions.
      */
     public void penalty() {
-        // TODO implement
         cards.clear();
-        env.ui.setFreeze(id, env.config.penaltyFreezeMillis);
+        peneltyTime = System.currentTimeMillis() + env.config.penaltyFreezeMillis;
     }
 
     public int score() {
@@ -208,6 +213,7 @@ public class Player implements Runnable {
     }
 
     public boolean removeTokens() {
+
         try {
             cards.clear();
             return true;
@@ -225,8 +231,8 @@ public class Player implements Runnable {
             cardsArray[i] = -1;
         }
         int i = 0;
-        for (int card : cards) {
-            cardsArray[i] = card;
+        for (i = 0; i < cardsArray.length; i++) {
+            cardsArray[i] = cards.get(id);
             i++;
         }
         return cardsArray;
