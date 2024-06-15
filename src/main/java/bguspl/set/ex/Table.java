@@ -74,7 +74,7 @@ public class Table {
      *
      * @return - the number of cards on the table.
      */
-    public synchronized int countCards() {
+    public int countCards() {
         int cards = 0;
         for (Integer card : slotToCard)
             if (card != null)
@@ -112,7 +112,7 @@ public class Table {
         
     }
 
-    private synchronized boolean legalSlot(int slot) {
+    private boolean legalSlot(int slot) {
         return slot < slotToCard.length;
     }
 
@@ -136,7 +136,7 @@ public class Table {
      * @param slot   - the slot from which to remove the token.
      * @return       - true iff a token was successfully removed.
      */
-    public synchronized boolean removeToken(int player, int slot) {
+    public boolean removeToken(int player, int slot) {
         if (!tokenLegalSlot(slot))
             return false;
 
@@ -147,7 +147,7 @@ public class Table {
        
     }
 
-    private synchronized boolean tokenLegalSlot(int slot) {
+    private boolean tokenLegalSlot(int slot) {
         return legalSlot(slot) && slotToCard[slot] != null;
     }
 
